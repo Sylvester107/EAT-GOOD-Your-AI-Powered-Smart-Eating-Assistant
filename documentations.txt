@@ -1,0 +1,10 @@
+https://cloud.google.com/vision/docs/setup
+https://cloud.google.com/python/docs/reference/vision/latest
+
+export PATH="$PATH:~/AppData/Local/Google/Cloud SDK/google-cloud-sdk/bin"
+
+\AppData\Local\Google\Cloud SDK
+
+https://aistudio.google.com/apikey
+https://cloud.google.com/vertex-ai/generative-ai/docs/sdks/overview?hl=en
+Gemini_api_key = AIzaSyAzW8uzseNgVjfairl3m1O466SsoiC_TXA

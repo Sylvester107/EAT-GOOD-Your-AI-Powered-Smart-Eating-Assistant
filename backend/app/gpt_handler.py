@@ -1,12 +1,12 @@
 import os
 import json
 from typing import Dict, List, Any, Optional
-import google.generativeai as genai
+from google import genai
 from pydantic import BaseModel, Field
 
 # Configure Gemini API
 API_KEY = os.getenv("GEMINI_API_KEY")
-genai.configure(api_key=API_KEY)
+client = genai.Client(vertexai=True,project="eat-good-vsion",location="us-central1")
 
 
 class UserProfile(BaseModel):
@@ -22,10 +22,10 @@ class UserProfile(BaseModel):
 
 
 class NutritionAnalyzer:
-    def __init__(self):
+    def __init__(self, model_name="gemini-2.0-flash"):
         """Initialize the Nutrition Analyzer with Gemini model"""
-        # Using the most capable Gemini model for detailed analysis
-        self.model = genai.GenerativeModel('gemini-pro')
+        self.model_name = model_name
+        self.client = client
         
     def _create_analysis_prompt(self, nutrition_data: Dict, user_profile: Optional[UserProfile] = None) -> str:
         """
@@ -135,8 +135,11 @@ class NutritionAnalyzer:
             # Generate the prompt
             prompt = self._create_analysis_prompt(enriched_data, user_profile)
             
-            # Get response from Gemini
-            response = self.model.generate_content(prompt)
+            # Get response from Gemini using the updated method
+            response = self.client.models.generate_content(
+                model=self.model_name,
+                contents=prompt,
+            )
             
             # Parse the JSON response
             try:

@@ -1,0 +1,10 @@
+20/03/2025
+llm integration failing
+permission denied when hitting vertex ai
+credentials enabled
+fixed: by passing looking trying the api on google cloud and clicking get code
+solution v=  client = genai.Client(
+      vertexai=True,
+      project="eat-good-vsion",
+      location="us-central1",
+  )
