@@ -8,3 +8,38 @@ solution v=  client = genai.Client(
       project="eat-good-vsion",
       location="us-central1",
   )
+
+  backend is working note that in gpt_handler, we do not need the api key as google no longer uses it for authentication, 
+  initialise the project and pass the project name
+
+  backend improvement suggestions
+  Add Rate Limiting:
+Implement rate limiting to prevent abuse
+Add API key validation
+Add Caching:
+Cache API responses
+Cache user profiles
+Add Input Validation:
+Add Pydantic models for request validation
+Add file size limits
+Add file type validation
+Add Monitoring:
+Add metrics collection
+Add performance monitoring
+
+
+
+# i have added a frontend using react.js and node.js the frontend interfaces with the backend using fast api
+we started with the backend. the backend 
+created a google cloud project. which uses two google ml api's 
+vertex ai and gemini flash 2.0
+next we build a processor, the processes the image to be passed to the gemini vision api
+the vision api scans the product and extract all the text that was passed
+the parsed text along with a predefined prompt  is sent to gemini, gemini returns nutrition facts, nutrition score calories and suggestions
+The backend and the frontend communicates using fastapi
+we Implement logging 
+we have added a new camera functionality for real time capture
+
+
+to use project; start the backend server "python backend/app/main.py
+then start the frontend npm install; npm run dev

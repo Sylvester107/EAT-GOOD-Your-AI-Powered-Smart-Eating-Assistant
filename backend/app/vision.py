@@ -1,20 +1,27 @@
 import io
 import os
 from typing import Dict, List, Optional, Tuple
-
 import cv2
-import numpy as np
 from google.cloud import vision
+import numpy as np
 from google.cloud.vision_v1 import AnnotateImageResponse
 from PIL import Image
+import logging
+import traceback
 
+# Configure logging
+logger = logging.getLogger(__name__)
 
 class VisionProcessor:
     def __init__(self):
-        # Initialize the Google Cloud Vision client
-        # Make sure you have set GOOGLE_APPLICATION_CREDENTIALS environment variable
-        # or explicitly provide credentials
-        self.client = vision.ImageAnnotatorClient()
+        """Initialize the Google Cloud Vision client"""
+        try:
+            # Initialize the Google Cloud Vision client
+            self.client = vision.ImageAnnotatorClient()
+            logger.info("Successfully initialized Vision API client")
+        except Exception as e:
+            logger.error(f"Failed to initialize Vision API client: {str(e)}")
+            raise
         
     def preprocess_image(self, image_bytes: bytes) -> bytes:
         """
@@ -26,26 +33,35 @@ class VisionProcessor:
         Returns:
             Processed image bytes
         """
-        # Convert bytes to numpy array
-        nparr = np.frombuffer(image_bytes, np.uint8)
-        img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-        
-        # Image preprocessing to improve OCR
-        # 1. Convert to grayscale
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        
-        # 2. Apply threshold to get black and white image
-        _, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-        
-        # 3. Optional: Noise removal
-        kernel = np.ones((1, 1), np.uint8)
-        opening = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel, iterations=1)
-        
-        # Convert back to bytes
-        processed_img = Image.fromarray(opening)
-        buffer = io.BytesIO()
-        processed_img.save(buffer, format="PNG")
-        return buffer.getvalue()
+        try:
+            # Convert bytes to numpy array
+            nparr = np.frombuffer(image_bytes, np.uint8)
+            img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+            
+            if img is None:
+                raise ValueError("Failed to decode image")
+            
+            # Image preprocessing to improve OCR
+            # 1. Convert to grayscale
+            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            
+            # 2. Apply threshold to get black and white image
+            _, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+            
+            # 3. Optional: Noise removal
+            kernel = np.ones((1, 1), np.uint8)
+            opening = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel, iterations=1)
+            
+            # Convert back to bytes
+            processed_img = Image.fromarray(opening)
+            buffer = io.BytesIO()
+            processed_img.save(buffer, format="PNG")
+            return buffer.getvalue()
+            
+        except Exception as e:
+            logger.error(f"Error preprocessing image: {str(e)}")
+            logger.error(traceback.format_exc())
+            raise
     
     def detect_text(self, image_bytes: bytes, preprocess: bool = True) -> List[str]:
         """
@@ -58,27 +74,38 @@ class VisionProcessor:
         Returns:
             List of extracted text strings
         """
-        # Preprocess image if requested
-        if preprocess:
-            image_bytes = self.preprocess_image(image_bytes)
-        
-        # Prepare image for Google Cloud Vision
-        image = vision.Image(content=image_bytes)
-        
-        # Perform text detection
-        response = self.client.text_detection(image=image)
-        
-        # Check for errors
-        if response.error.message:
-            raise Exception(f"Error detecting text: {response.error.message}")
-        
-        # Extract text from the response
-        texts = []
-        for text in response.text_annotations:
-            texts.append(text.description)
-        
-        # The first text annotation contains the entire detected text
-        return texts[1:] if len(texts) > 0 else []
+        try:
+            # Preprocess image if requested
+            if preprocess:
+                logger.info("Preprocessing image before text detection")
+                image_bytes = self.preprocess_image(image_bytes)
+            
+            # Prepare image for Google Cloud Vision
+            image = vision.Image(content=image_bytes)
+            
+            # Perform text detection
+            logger.info("Sending request to Vision API for text detection")
+            response = self.client.text_detection(image=image)
+            
+            # Check for errors
+            if response.error.message:
+                error_msg = f"Vision API error: {response.error.message}"
+                logger.error(error_msg)
+                raise Exception(error_msg)
+            
+            # Extract text from the response
+            texts = []
+            for text in response.text_annotations:
+                texts.append(text.description)
+            
+            logger.info(f"Successfully detected {len(texts)} text blocks")
+            # The first text annotation contains the entire detected text
+            return texts[1:] if len(texts) > 0 else []
+            
+        except Exception as e:
+            logger.error(f"Error in text detection: {str(e)}")
+            logger.error(traceback.format_exc())
+            raise
     
     def detect_nutrition_facts(self, image_bytes: bytes) -> Dict:
         """
@@ -91,23 +118,34 @@ class VisionProcessor:
         Returns:
             Dictionary containing nutrition information
         """
-        # Prepare image for Google Cloud Vision
-        image = vision.Image(content=image_bytes)
-        
-        # Get text detection results
-        response = self.client.text_detection(image=image)
-        
-        if response.error.message:
-            raise Exception(f"Error detecting nutrition facts: {response.error.message}")
-        
-        # Extract the full text
-        if not response.text_annotations:
-            return {"error": "No text detected in the image"}
-        
-        full_text = response.text_annotations[0].description
-        
-        # Parse nutrition facts from the text using helper method
-        return self._parse_nutrition_facts(full_text)
+        try:
+            # Prepare image for Google Cloud Vision
+            image = vision.Image(content=image_bytes)
+            
+            # Get text detection results
+            logger.info("Sending request to Vision API for nutrition facts detection")
+            response = self.client.text_detection(image=image)
+            
+            if response.error.message:
+                error_msg = f"Vision API error: {response.error.message}"
+                logger.error(error_msg)
+                raise Exception(error_msg)
+            
+            # Extract the full text
+            if not response.text_annotations:
+                logger.warning("No text detected in the image")
+                return {"error": "No text detected in the image"}
+            
+            full_text = response.text_annotations[0].description
+            logger.info("Successfully extracted text from nutrition facts")
+            
+            # Parse nutrition facts from the text using helper method
+            return self._parse_nutrition_facts(full_text)
+            
+        except Exception as e:
+            logger.error(f"Error in nutrition facts detection: {str(e)}")
+            logger.error(traceback.format_exc())
+            raise
     
     def _parse_nutrition_facts(self, text: str) -> Dict:
         """
@@ -119,60 +157,72 @@ class VisionProcessor:
         Returns:
             Dictionary with parsed nutrition information
         """
-        # Initialize result dictionary
-        result = {
-            "calories": None,
-            "fat": None,
-            "carbohydrates": None,
-            "protein": None,
-            "ingredients": [],
-            "raw_text": text
-        }
-        
-        # Split text into lines for easier processing
-        lines = text.split('\n')
-        
-        # Look for common nutrition fact patterns
-        for i, line in enumerate(lines):
-            line_lower = line.lower()
+        try:
+            # Initialize result dictionary
+            result = {
+                "calories": None,
+                "fat": None,
+                "carbohydrates": None,
+                "protein": None,
+                "ingredients": [],
+                "raw_text": text
+            }
             
-            # Extract calories
-            if "calories" in line_lower:
-                # Try to extract numeric value using various patterns
-                import re
-                calorie_match = re.search(r'calories[:\s]*(\d+)', line_lower)
-                if calorie_match:
-                    result["calories"] = int(calorie_match.group(1))
+            # Split text into lines for easier processing
+            lines = text.split('\n')
             
-            # Extract other nutrition facts
-            if "fat" in line_lower and not "saturated" in line_lower:
-                # Extract fat content
-                fat_match = re.search(r'fat[:\s]*(\d+\.?\d*)g', line_lower)
-                if fat_match:
-                    result["fat"] = float(fat_match.group(1))
+            # Look for common nutrition fact patterns
+            for i, line in enumerate(lines):
+                line_lower = line.lower()
+                
+                # Extract calories
+                if "calories" in line_lower:
+                    # Try to extract numeric value using various patterns
+                    import re
+                    calorie_match = re.search(r'calories[:\s]*(\d+)', line_lower)
+                    if calorie_match:
+                        result["calories"] = int(calorie_match.group(1))
+                        logger.debug(f"Found calories: {result['calories']}")
+                
+                # Extract other nutrition facts
+                if "fat" in line_lower and not "saturated" in line_lower:
+                    # Extract fat content
+                    fat_match = re.search(r'fat[:\s]*(\d+\.?\d*)g', line_lower)
+                    if fat_match:
+                        result["fat"] = float(fat_match.group(1))
+                        logger.debug(f"Found fat: {result['fat']}g")
+                
+                if "carbohydrate" in line_lower or "carbs" in line_lower:
+                    # Extract carbohydrate content
+                    carb_match = re.search(r'carb[^:]*[:\s]*(\d+\.?\d*)g', line_lower)
+                    if carb_match:
+                        result["carbohydrates"] = float(carb_match.group(1))
+                        logger.debug(f"Found carbohydrates: {result['carbohydrates']}g")
+                
+                if "protein" in line_lower:
+                    # Extract protein content
+                    protein_match = re.search(r'protein[:\s]*(\d+\.?\d*)g', line_lower)
+                    if protein_match:
+                        result["protein"] = float(protein_match.group(1))
+                        logger.debug(f"Found protein: {result['protein']}g")
+                
+                # Check for ingredients list
+                if "ingredients" in line_lower:
+                    # Ingredients typically follow the "Ingredients:" label
+                    if i < len(lines) - 1:
+                        ingredients_text = lines[i+1]
+                        # Split by commas or periods
+                        ingredients = [ing.strip() for ing in re.split(r'[,.]', ingredients_text) if ing.strip()]
+                        result["ingredients"] = ingredients
+                        logger.debug(f"Found {len(ingredients)} ingredients")
             
-            if "carbohydrate" in line_lower or "carbs" in line_lower:
-                # Extract carbohydrate content
-                carb_match = re.search(r'carb[^:]*[:\s]*(\d+\.?\d*)g', line_lower)
-                if carb_match:
-                    result["carbohydrates"] = float(carb_match.group(1))
+            logger.info("Successfully parsed nutrition facts")
+            return result
             
-            if "protein" in line_lower:
-                # Extract protein content
-                protein_match = re.search(r'protein[:\s]*(\d+\.?\d*)g', line_lower)
-                if protein_match:
-                    result["protein"] = float(protein_match.group(1))
-            
-            # Check for ingredients list
-            if "ingredients" in line_lower:
-                # Ingredients typically follow the "Ingredients:" label
-                if i < len(lines) - 1:
-                    ingredients_text = lines[i+1]
-                    # Split by commas or periods
-                    ingredients = [ing.strip() for ing in re.split(r'[,.]', ingredients_text) if ing.strip()]
-                    result["ingredients"] = ingredients
-        
-        return result
+        except Exception as e:
+            logger.error(f"Error parsing nutrition facts: {str(e)}")
+            logger.error(traceback.format_exc())
+            raise
     
     def analyze_product_image(self, image_bytes: bytes) -> Dict:
         """
@@ -185,11 +235,15 @@ class VisionProcessor:
             Dictionary with complete analysis results
         """
         try:
+            logger.info("Starting product image analysis")
+            
             # Extract general text
             all_text = self.detect_text(image_bytes)
             
             # Extract nutrition facts
             nutrition = self.detect_nutrition_facts(image_bytes)
+            
+            logger.info("Successfully completed product image analysis")
             
             # Combine results
             return {
@@ -197,10 +251,14 @@ class VisionProcessor:
                 "detected_text": all_text,
                 "nutrition_facts": nutrition
             }
+            
         except Exception as e:
+            error_msg = f"Error analyzing product image: {str(e)}"
+            logger.error(error_msg)
+            logger.error(traceback.format_exc())
             return {
                 "success": False,
-                "error": str(e)
+                "error": error_msg
             }
 
 
