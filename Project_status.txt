@@ -39,7 +39,13 @@ the parsed text along with a predefined prompt  is sent to gemini, gemini return
 The backend and the frontend communicates using fastapi
 we Implement logging 
 we have added a new camera functionality for real time capture
-
+next steps
+write manuscript
+prepare presentation
+keep adding improvement
+improve prompt in case image is not food related
+collect user profile for better personalised analysis
+think deployment
 
 to use project; start the backend server "python backend/app/main.py
 then start the frontend npm install; npm run dev

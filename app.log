@@ -136,3 +136,74 @@
 2025-04-07 00:44:12,024 - gpt_handler - INFO - Successfully parsed Gemini response
 2025-04-07 00:44:12,025 - gpt_handler - INFO - Generated visual verdict with health score: 3
 2025-04-07 00:44:12,025 - main - INFO - Successfully completed product scan and analysis
+2025-04-08 13:36:27,845 - gpt_handler - INFO - Successfully initialized Gemini API client
+2025-04-08 13:36:31,112 - vision - INFO - Successfully initialized Vision API client
+2025-04-08 13:36:31,112 - gpt_handler - INFO - Initialized NutritionAnalyzer with model: gemini-2.0-flash
+2025-04-08 13:36:33,056 - gpt_handler - INFO - Successfully initialized Gemini API client
+2025-04-08 13:36:34,295 - vision - INFO - Successfully initialized Vision API client
+2025-04-08 13:36:34,296 - gpt_handler - INFO - Initialized NutritionAnalyzer with model: gemini-2.0-flash
+2025-04-08 13:36:35,696 - vision - INFO - Successfully initialized Vision API client
+2025-04-08 13:36:35,697 - gpt_handler - INFO - Initialized NutritionAnalyzer with model: gemini-2.0-flash
+2025-04-08 13:37:45,535 - main - WARNING - No user ID provided in request
+2025-04-08 13:37:45,536 - main - INFO - Starting product scan for user: anonymous
+2025-04-08 13:37:45,537 - main - INFO - Processing image with Vision API
+2025-04-08 13:37:45,537 - vision - INFO - Starting product image analysis
+2025-04-08 13:37:45,537 - vision - INFO - Preprocessing image before text detection
+2025-04-08 13:37:45,774 - vision - INFO - Sending request to Vision API for text detection
+2025-04-08 13:37:46,286 - vision - INFO - Successfully detected 66 text blocks
+2025-04-08 13:37:46,287 - vision - INFO - Sending request to Vision API for nutrition facts detection
+2025-04-08 13:37:46,793 - vision - INFO - Successfully extracted text from nutrition facts
+2025-04-08 13:37:46,796 - vision - INFO - Successfully parsed nutrition facts
+2025-04-08 13:37:46,796 - vision - INFO - Successfully completed product image analysis
+2025-04-08 13:37:46,796 - main - INFO - Extracted product name from image: Nutrition
+2025-04-08 13:37:46,796 - main - INFO - Analyzing nutrition data with Gemini
+2025-04-08 13:37:46,797 - gpt_handler - INFO - Starting nutrition analysis for product: Nutrition
+2025-04-08 13:37:46,797 - gpt_handler - INFO - Sending request to Gemini API
+2025-04-08 13:37:46,797 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2025-04-08 13:37:50,726 - httpx - INFO - HTTP Request: POST https://us-central1-aiplatform.googleapis.com/v1beta1/projects/eat-good-vsion/locations/us-central1/publishers/google/models/gemini-2.0-flash:generateContent "HTTP/1.1 200 OK"
+2025-04-08 13:37:50,737 - google_genai.models - INFO - AFC remote call 1 is done.
+2025-04-08 13:37:50,737 - gpt_handler - INFO - Successfully parsed Gemini response
+2025-04-08 13:37:50,738 - gpt_handler - INFO - Generated visual verdict with health score: 5
+2025-04-08 13:37:50,738 - main - INFO - Successfully completed product scan and analysis
+2025-04-08 13:39:00,918 - main - WARNING - No user ID provided in request
+2025-04-08 13:39:00,919 - main - INFO - Starting product scan for user: anonymous
+2025-04-08 13:39:00,919 - main - INFO - Processing image with Vision API
+2025-04-08 13:39:00,920 - vision - INFO - Starting product image analysis
+2025-04-08 13:39:00,920 - vision - INFO - Preprocessing image before text detection
+2025-04-08 13:39:00,946 - vision - INFO - Sending request to Vision API for text detection
+2025-04-08 13:39:01,239 - vision - INFO - Successfully detected 124 text blocks
+2025-04-08 13:39:01,240 - vision - INFO - Sending request to Vision API for nutrition facts detection
+2025-04-08 13:39:01,858 - vision - INFO - Successfully extracted text from nutrition facts
+2025-04-08 13:39:01,859 - vision - INFO - Successfully parsed nutrition facts
+2025-04-08 13:39:01,859 - vision - INFO - Successfully completed product image analysis
+2025-04-08 13:39:01,859 - main - INFO - Extracted product name from image: Nutrition
+2025-04-08 13:39:01,859 - main - INFO - Analyzing nutrition data with Gemini
+2025-04-08 13:39:01,859 - gpt_handler - INFO - Starting nutrition analysis for product: Nutrition
+2025-04-08 13:39:01,860 - gpt_handler - INFO - Sending request to Gemini API
+2025-04-08 13:39:01,860 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2025-04-08 13:39:04,202 - httpx - INFO - HTTP Request: POST https://us-central1-aiplatform.googleapis.com/v1beta1/projects/eat-good-vsion/locations/us-central1/publishers/google/models/gemini-2.0-flash:generateContent "HTTP/1.1 200 OK"
+2025-04-08 13:39:04,203 - google_genai.models - INFO - AFC remote call 1 is done.
+2025-04-08 13:39:04,205 - gpt_handler - INFO - Successfully parsed Gemini response
+2025-04-08 13:39:04,205 - gpt_handler - INFO - Generated visual verdict with health score: 4
+2025-04-08 13:39:04,205 - main - INFO - Successfully completed product scan and analysis
+2025-04-08 14:39:14,317 - main - WARNING - No user ID provided in request
+2025-04-08 14:39:14,317 - main - INFO - Starting product scan for user: anonymous
+2025-04-08 14:39:14,317 - main - INFO - Processing image with Vision API
+2025-04-08 14:39:14,317 - vision - INFO - Starting product image analysis
+2025-04-08 14:39:14,318 - vision - INFO - Preprocessing image before text detection
+2025-04-08 14:39:14,420 - vision - INFO - Sending request to Vision API for text detection
+2025-04-08 14:39:15,083 - vision - INFO - Successfully detected 149 text blocks
+2025-04-08 14:39:15,084 - vision - INFO - Sending request to Vision API for nutrition facts detection
+2025-04-08 14:39:15,733 - vision - INFO - Successfully extracted text from nutrition facts
+2025-04-08 14:39:15,733 - vision - INFO - Successfully parsed nutrition facts
+2025-04-08 14:39:15,734 - vision - INFO - Successfully completed product image analysis
+2025-04-08 14:39:15,734 - main - INFO - Extracted product name from image: Sprite
+2025-04-08 14:39:15,734 - main - INFO - Analyzing nutrition data with Gemini
+2025-04-08 14:39:15,734 - gpt_handler - INFO - Starting nutrition analysis for product: Sprite
+2025-04-08 14:39:15,734 - gpt_handler - INFO - Sending request to Gemini API
+2025-04-08 14:39:15,735 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2025-04-08 14:39:18,243 - httpx - INFO - HTTP Request: POST https://us-central1-aiplatform.googleapis.com/v1beta1/projects/eat-good-vsion/locations/us-central1/publishers/google/models/gemini-2.0-flash:generateContent "HTTP/1.1 200 OK"
+2025-04-08 14:39:18,245 - google_genai.models - INFO - AFC remote call 1 is done.
+2025-04-08 14:39:18,246 - gpt_handler - INFO - Successfully parsed Gemini response
+2025-04-08 14:39:18,246 - gpt_handler - INFO - Generated visual verdict with health score: 3
+2025-04-08 14:39:18,246 - main - INFO - Successfully completed product scan and analysis
