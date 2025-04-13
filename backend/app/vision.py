@@ -176,36 +176,68 @@ class VisionProcessor:
             for i, line in enumerate(lines):
                 line_lower = line.lower()
                 
-                # Extract calories
+                # Extract calories with more flexible patterns
                 if "calories" in line_lower:
-                    # Try to extract numeric value using various patterns
-                    
-                    calorie_match = re.search(r'calories[:\s]*(\d+)', line_lower)
-                    if calorie_match:
-                        result["calories"] = int(calorie_match.group(1))
-                        logger.debug(f"Found calories: {result['calories']}")
+                    patterns = [
+                        r'calories[:\s]*(\d+)',      # "Calories: 100"
+                        r'(\d+)\s*calories',         # "100 calories"
+                        r'kcal[:\s]*(\d+)',          # "kcal: 100"
+                        r'(\d+)\s*kcal',             # "100 kcal"
+                        r'calories.*?(\d+)'          # "calories (100)"
+                    ]
+                    for pattern in patterns:
+                        match = re.search(pattern, line_lower)
+                        if match:
+                            result["calories"] = int(match.group(1))
+                            logger.debug(f"Found calories: {result['calories']}")
+                            break
                 
-                # Extract other nutrition facts
+                # Extract fat with more flexible patterns
                 if "fat" in line_lower and not "saturated" in line_lower:
-                    # Extract fat content
-                    fat_match = re.search(r'fat[:\s]*(\d+\.?\d*)g', line_lower)
-                    if fat_match:
-                        result["fat"] = float(fat_match.group(1))
-                        logger.debug(f"Found fat: {result['fat']}g")
+                    patterns = [
+                        r'fat[:\s]*(\d+\.?\d*)\s*g',         # "Fat: 10g"
+                        r'(\d+\.?\d*)\s*g\s*fat',            # "10g fat"
+                        r'total fat[:\s]*(\d+\.?\d*)\s*g',   # "Total fat: 10g"
+                        r'fat.*?\((\d+\.?\d*)g\)'            # "fat (10g)"
+                    ]
+                    for pattern in patterns:
+                        match = re.search(pattern, line_lower)
+                        if match:
+                            result["fat"] = float(match.group(1))
+                            logger.debug(f"Found fat: {result['fat']}g")
+                            break
                 
+                # Extract carbohydrates with more flexible patterns
                 if "carbohydrate" in line_lower or "carbs" in line_lower:
-                    # Extract carbohydrate content
-                    carb_match = re.search(r'carb[^:]*[:\s]*(\d+\.?\d*)g', line_lower)
-                    if carb_match:
-                        result["carbohydrates"] = float(carb_match.group(1))
-                        logger.debug(f"Found carbohydrates: {result['carbohydrates']}g")
+                    patterns = [
+                        r'carb[^:]*[:\s]*(\d+\.?\d*)\s*g',   # "Carbohydrates: 20g"
+                        r'(\d+\.?\d*)\s*g\s*carb',           # "20g carb"
+                        r'carbs[:\s]*(\d+\.?\d*)\s*g',       # "Carbs: 20g"
+                        r'carbohydrates.*?\((\d+\.?\d*)g\)',  # "carbohydrates (20g)"
+                        r'high in carbohydrates.*?\((\d+\.?\d*)g\)'  # "high in carbohydrates (20g)"
+                    ]
+                    for pattern in patterns:
+                        match = re.search(pattern, line_lower)
+                        if match:
+                            result["carbohydrates"] = float(match.group(1))
+                            logger.debug(f"Found carbohydrates: {result['carbohydrates']}g")
+                            break
                 
+                # Extract protein with more flexible patterns
                 if "protein" in line_lower:
-                    # Extract protein content
-                    protein_match = re.search(r'protein[:\s]*(\d+\.?\d*)g', line_lower)
-                    if protein_match:
-                        result["protein"] = float(protein_match.group(1))
-                        logger.debug(f"Found protein: {result['protein']}g")
+                    patterns = [
+                        r'protein[:\s]*(\d+\.?\d*)\s*g',     # "Protein: 5g"
+                        r'(\d+\.?\d*)\s*g\s*protein',        # "5g protein"
+                        r'total protein[:\s]*(\d+\.?\d*)\s*g', # "Total protein: 5g"
+                        r'protein.*?\((\d+\.?\d*)g\)',        # "protein (5g)"
+                        r'contains.*?protein.*?\((\d+\.?\d*)g\)'  # "contains some protein (5g)"
+                    ]
+                    for pattern in patterns:
+                        match = re.search(pattern, line_lower)
+                        if match:
+                            result["protein"] = float(match.group(1))
+                            logger.debug(f"Found protein: {result['protein']}g")
+                            break
                 
                 # Check for ingredients list
                 if "ingredients" in line_lower:

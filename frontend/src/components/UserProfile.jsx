@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Box,
     Paper,
@@ -11,7 +11,9 @@ import {
     MenuItem,
     Chip,
     Stack,
+    Alert,
 } from '@mui/material';
+import { updateUserProfile, getUserProfile } from '../services/api';
 
 const UserProfile = ({ onProfileUpdate }) => {
     const [profile, setProfile] = useState({
@@ -23,18 +25,68 @@ const UserProfile = ({ onProfileUpdate }) => {
         daily_calorie_target: '',
         activity_level: '',
     });
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [success, setSuccess] = useState(false);
+
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                setLoading(true);
+                const response = await getUserProfile();
+                if (response.success && response.profile) {
+                    setProfile(response.profile);
+                }
+            } catch (error) {
+                console.error('Error fetching profile:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProfile();
+    }, []);
 
     const handleChange = (field) => (event) => {
-        setProfile({ ...profile, [field]: event.target.value });
+        const value = event.target.value;
+        // Convert daily_calorie_target to number
+        if (field === 'daily_calorie_target') {
+            setProfile({ ...profile, [field]: value ? parseInt(value, 10) : null });
+        } else {
+            setProfile({ ...profile, [field]: value });
+        }
     };
 
     const handleMultiSelect = (field) => (event) => {
         setProfile({ ...profile, [field]: event.target.value });
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        onProfileUpdate(profile);
+        try {
+            setLoading(true);
+            setError(null);
+            setSuccess(false);
+
+            // Ensure daily_calorie_target is a number or null
+            const profileData = {
+                ...profile,
+                daily_calorie_target: profile.daily_calorie_target ? parseInt(profile.daily_calorie_target, 10) : null
+            };
+
+            const response = await updateUserProfile(profileData);
+            if (response.success) {
+                setSuccess(true);
+                onProfileUpdate(response.profile);
+            } else {
+                setError(response.error || 'Failed to update profile');
+            }
+        } catch (error) {
+            setError('Failed to update profile. Please try again.');
+            console.error('Error updating profile:', error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -42,6 +94,16 @@ const UserProfile = ({ onProfileUpdate }) => {
             <Typography variant="h5" gutterBottom>
                 Your Profile
             </Typography>
+            {error && (
+                <Alert severity="error" sx={{ mb: 2 }}>
+                    {error}
+                </Alert>
+            )}
+            {success && (
+                <Alert severity="success" sx={{ mb: 2 }}>
+                    Profile updated successfully!
+                </Alert>
+            )}
             <form onSubmit={handleSubmit}>
                 <Stack spacing={2}>
                     <TextField
@@ -49,6 +111,7 @@ const UserProfile = ({ onProfileUpdate }) => {
                         value={profile.name}
                         onChange={handleChange('name')}
                         fullWidth
+                        disabled={loading}
                     />
 
                     <FormControl fullWidth>
@@ -57,6 +120,7 @@ const UserProfile = ({ onProfileUpdate }) => {
                             value={profile.weight_goal}
                             onChange={handleChange('weight_goal')}
                             label="Weight Goal"
+                            disabled={loading}
                         >
                             <MenuItem value="lose">Lose Weight</MenuItem>
                             <MenuItem value="maintain">Maintain Weight</MenuItem>
@@ -71,6 +135,7 @@ const UserProfile = ({ onProfileUpdate }) => {
                             value={profile.dietary_restrictions}
                             onChange={handleMultiSelect('dietary_restrictions')}
                             label="Dietary Restrictions"
+                            disabled={loading}
                             renderValue={(selected) => (
                                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                                     {selected.map((value) => (
@@ -95,6 +160,7 @@ const UserProfile = ({ onProfileUpdate }) => {
                             value={profile.allergies}
                             onChange={handleMultiSelect('allergies')}
                             label="Allergies"
+                            disabled={loading}
                             renderValue={(selected) => (
                                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                                     {selected.map((value) => (
@@ -120,6 +186,7 @@ const UserProfile = ({ onProfileUpdate }) => {
                             value={profile.health_conditions}
                             onChange={handleMultiSelect('health_conditions')}
                             label="Health Conditions"
+                            disabled={loading}
                             renderValue={(selected) => (
                                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                                     {selected.map((value) => (
@@ -142,6 +209,7 @@ const UserProfile = ({ onProfileUpdate }) => {
                         value={profile.daily_calorie_target}
                         onChange={handleChange('daily_calorie_target')}
                         fullWidth
+                        disabled={loading}
                     />
 
                     <FormControl fullWidth>
@@ -150,6 +218,7 @@ const UserProfile = ({ onProfileUpdate }) => {
                             value={profile.activity_level}
                             onChange={handleChange('activity_level')}
                             label="Activity Level"
+                            disabled={loading}
                         >
                             <MenuItem value="sedentary">Sedentary</MenuItem>
                             <MenuItem value="moderate">Moderate</MenuItem>
@@ -164,8 +233,9 @@ const UserProfile = ({ onProfileUpdate }) => {
                         color="primary"
                         fullWidth
                         sx={{ mt: 2 }}
+                        disabled={loading}
                     >
-                        Save Profile
+                        {loading ? 'Saving...' : 'Save Profile'}
                     </Button>
                 </Stack>
             </form>

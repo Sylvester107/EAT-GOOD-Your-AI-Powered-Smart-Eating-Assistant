@@ -44,6 +44,9 @@ app.add_middleware(
 vision_processor = VisionProcessor()
 nutrition_analyzer = NutritionAnalyzer()
 
+# In-memory user profile storage
+current_user_profile = None
+
 # Models for request/response
 class ScanResponse(BaseModel):
     success: bool
@@ -52,6 +55,15 @@ class ScanResponse(BaseModel):
     analysis: Optional[Dict] = None
     visual_verdict: Optional[Dict] = None
     error: Optional[str] = None
+
+class UserProfileUpdate(BaseModel):
+    name: Optional[str] = None
+    weight_goal: Optional[str] = None
+    dietary_restrictions: Optional[List[str]] = None
+    allergies: Optional[List[str]] = None
+    health_conditions: Optional[List[str]] = None
+    daily_calorie_target: Optional[int] = None
+    activity_level: Optional[str] = None
 
 # Error handling middleware
 @app.middleware("http")
@@ -86,87 +98,49 @@ async def get_current_user(x_user_id: Optional[str] = Header(None)) -> Optional[
 async def scan_product(
     file: UploadFile = File(...),
     product_name: Optional[str] = Form(None),
-    current_user: Optional[UserProfile] = Depends(get_current_user)
 ):
-    """
-    Scan a product image and analyze nutrition information
-    
-    - **file**: Image file containing nutrition facts
-    - **product_name**: Optional product name
-    - **current_user**: User profile (from header)
-    """
+    """Analyze a product image and provide nutrition insights"""
     try:
-        logger.info(f"Starting product scan for user: {current_user.user_id if current_user else 'anonymous'}")
+        # Read the image file
+        contents = await file.read()
         
-        # Validate file type
-        if not file.content_type.startswith('image/'):
-            logger.warning(f"Invalid file type: {file.content_type}")
-            raise HTTPException(status_code=400, detail="File must be an image")
+        # Process the image with Vision API
+        vision_result = vision_processor.analyze_product_image(contents)
         
-        # Read the image
-        image_bytes = await file.read()
+        if not vision_result.get("success"):
+            return ScanResponse(
+                success=False,
+                error=vision_result.get("error", "Failed to analyze image")
+            )
         
-        # Process with vision API
-        logger.info("Processing image with Vision API")
-        vision_result = vision_processor.analyze_product_image(image_bytes)
-        
-        if not vision_result.get("success", False):
-            error_msg = vision_result.get("error", "Failed to process image")
-            logger.error(f"Vision API error: {error_msg}")
-            return {
-                "success": False,
-                "error": error_msg
-            }
-        
-        # Get nutrition facts from vision result
+        # Get nutrition data
         nutrition_data = vision_result.get("nutrition_facts", {})
         
-        # If no product name provided, try to guess from detected text
-        if not product_name:
-            all_text = vision_result.get("detected_text", [])
-            if all_text and len(all_text) > 0:
-                product_name = all_text[0]
-                logger.info(f"Extracted product name from image: {product_name}")
-        
-        # Analyze nutrition data with Gemini
-        logger.info("Analyzing nutrition data with Gemini")
-        analysis_result = nutrition_analyzer.analyze_nutrition(
+        # Analyze nutrition with user profile context
+        analysis = nutrition_analyzer.analyze_nutrition(
             nutrition_data=nutrition_data,
-            user_profile=current_user,
+            user_profile=current_user_profile,  # Pass the current user profile
             product_name=product_name
         )
         
-        if not analysis_result.get("success", False):
-            error_msg = analysis_result.get("error", "Failed to analyze nutrition data")
-            logger.error(f"Gemini API error: {error_msg}")
-            return {
-                "success": False,
-                "error": error_msg
-            }
+        # Get visual verdict
+        visual_verdict = nutrition_analyzer.get_visual_verdict(analysis)
         
-        # Generate visual verdict for frontend
-        visual_verdict = nutrition_analyzer.get_visual_verdict(analysis_result)
+        return ScanResponse(
+            success=True,
+            product_name=product_name,
+            nutrition_data=nutrition_data,
+            analysis=analysis,
+            visual_verdict=visual_verdict
+        )
         
-        logger.info("Successfully completed product scan and analysis")
-        
-        # Return complete response
-        return {
-            "success": True,
-            "product_name": product_name or "Unknown Product",
-            "nutrition_data": nutrition_data,
-            "analysis": analysis_result.get("analysis", {}),
-            "visual_verdict": visual_verdict
-        }
-        
-    except HTTPException:
-        raise
     except Exception as e:
-        logger.error(f"Unexpected error in scan_product: {str(e)}")
+        logger.error(f"Error in scan_product: {str(e)}")
         logger.error(traceback.format_exc())
-        return {
-            "success": False,
-            "error": f"Error processing request: {str(e)}"
-        }
+        return ScanResponse(
+            success=False,
+            error=str(e)
+        )
 
 @app.get("/api/health")
 async def health_check():
@@ -184,6 +158,36 @@ async def health_check():
             status_code=500,
             content={"status": "unhealthy", "error": str(e)}
         )
+
+@app.post("/api/user/profile")
+async def update_user_profile(profile: UserProfileUpdate):
+    """Update the current user's profile"""
+    try:
+        global current_user_profile
+        
+        # Create or update the user profile
+        if current_user_profile is None:
+            current_user_profile = UserProfile(
+                user_id="demo_user",  # Fixed user ID for demo
+                **profile.dict(exclude_unset=True)
+            )
+        else:
+            # Update existing profile
+            for field, value in profile.dict(exclude_unset=True).items():
+                setattr(current_user_profile, field, value)
+        
+        logger.info(f"Updated user profile: {current_user_profile.dict()}")
+        return {"success": True, "profile": current_user_profile.dict()}
+    except Exception as e:
+        logger.error(f"Error updating user profile: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/user/profile")
+async def get_current_profile():
+    """Get the current user's profile"""
+    if current_user_profile is None:
+        return {"success": False, "message": "No profile set"}
+    return {"success": True, "profile": current_user_profile.dict()}
 
 if __name__ == "__main__":
     import uvicorn

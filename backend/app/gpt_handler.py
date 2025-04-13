@@ -83,6 +83,11 @@ class NutritionAnalyzer:
             3. Use a friendly, conversational tone with short, impactful statements
             4. Include emoji where appropriate to make the analysis visually engaging
             5. Format your analysis for easy scanning on a mobile app
+            6. If the food is not healthy, suggest healthier alternatives that can be found in the store
+            7. If the food is healthy, suggest ways to enjoy it in a balanced way
+            8. take into account the user's profile when making the analysis
+            9. write like you are a talking to the user
+            10 if the image is not food, just say that you cannot analyze it
             """
             
             # Add personalized sections if user profile is available
@@ -102,6 +107,7 @@ class NutritionAnalyzer:
                 2. Assess if any ingredients conflict with the user's allergies (highlight these as warnings)
                 3. Determine if this food is appropriate for their weight goal and health conditions
                 4. Suggest how this food might fit into their daily calorie target
+                5. talk to the user like you are a friend
                 """
                 
             # Output structuring requirements
@@ -116,7 +122,7 @@ class NutritionAnalyzer:
               "positive_aspects": ["List of 2-3 positive nutritional aspects with emoji"],
               "concerns": ["List of 2-3 nutritional concerns with emoji"],
               "allergen_warnings": ["List of potential allergens found in ingredients"],
-              "alternatives": ["List of 2-3 healthier alternatives if applicable"],
+              "alternatives": ["List of 2-3 healthier alternatives if applicable mention the name of the alternative that can be found in the store"],
               "tips": ["1-2 tips on how to enjoy this food in a balanced way"],
               "fit_for_user": "Whether this food fits the user's profile (Yes/No/Partially)",
               "explanation": "2-3 sentences explaining the fit assessment"

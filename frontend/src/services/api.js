@@ -43,4 +43,24 @@ export const checkHealth = async () => {
         console.error('Error checking health:', error);
         throw error;
     }
+};
+
+export const updateUserProfile = async (profileData) => {
+    try {
+        const response = await api.post('/api/user/profile', profileData);
+        return response.data;
+    } catch (error) {
+        console.error('Error updating profile:', error);
+        throw error;
+    }
+};
+
+export const getUserProfile = async () => {
+    try {
+        const response = await api.get('/api/user/profile');
+        return response.data;
+    } catch (error) {
+        console.error('Error getting profile:', error);
+        throw error;
+    }
 }; 
