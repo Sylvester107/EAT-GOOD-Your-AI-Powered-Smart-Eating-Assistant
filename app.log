@@ -681,3 +681,42 @@ UnboundLocalError: cannot access local variable 're' where it is not associated 
 2025-04-12 23:38:52,078 - google_genai.models - INFO - AFC remote call 1 is done.
 2025-04-12 23:38:52,078 - gpt_handler - INFO - Successfully parsed Gemini response
 2025-04-12 23:38:52,078 - gpt_handler - INFO - Generated visual verdict with health score: 6
+2025-04-12 23:59:26,370 - gpt_handler - INFO - Successfully initialized Gemini API client
+2025-04-12 23:59:27,844 - vision - INFO - Successfully initialized Vision API client
+2025-04-12 23:59:27,844 - gpt_handler - INFO - Initialized NutritionAnalyzer with model: gemini-2.0-flash
+2025-04-12 23:59:29,537 - gpt_handler - INFO - Successfully initialized Gemini API client
+2025-04-12 23:59:30,628 - vision - INFO - Successfully initialized Vision API client
+2025-04-12 23:59:30,628 - gpt_handler - INFO - Initialized NutritionAnalyzer with model: gemini-2.0-flash
+2025-04-12 23:59:31,669 - vision - INFO - Successfully initialized Vision API client
+2025-04-12 23:59:31,670 - gpt_handler - INFO - Initialized NutritionAnalyzer with model: gemini-2.0-flash
+2025-04-13 00:00:01,792 - vision - INFO - Starting product image analysis
+2025-04-13 00:00:01,792 - vision - INFO - Preprocessing image before text detection
+2025-04-13 00:00:01,918 - vision - INFO - Sending request to Vision API for text detection
+2025-04-13 00:00:02,528 - vision - INFO - Successfully detected 149 text blocks
+2025-04-13 00:00:02,528 - vision - INFO - Sending request to Vision API for nutrition facts detection
+2025-04-13 00:00:03,132 - vision - INFO - Successfully extracted text from nutrition facts
+2025-04-13 00:00:03,134 - vision - INFO - Successfully parsed nutrition facts
+2025-04-13 00:00:03,134 - vision - INFO - Successfully completed product image analysis
+2025-04-13 00:00:03,134 - gpt_handler - INFO - Starting nutrition analysis for product: Unknown
+2025-04-13 00:00:03,134 - gpt_handler - INFO - Sending request to Gemini API
+2025-04-13 00:00:03,135 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2025-04-13 00:00:06,590 - httpx - INFO - HTTP Request: POST https://us-central1-aiplatform.googleapis.com/v1beta1/projects/eat-good-vsion/locations/us-central1/publishers/google/models/gemini-2.0-flash:generateContent "HTTP/1.1 200 OK"
+2025-04-13 00:00:06,591 - google_genai.models - INFO - AFC remote call 1 is done.
+2025-04-13 00:00:06,591 - gpt_handler - INFO - Successfully parsed Gemini response
+2025-04-13 00:00:06,592 - gpt_handler - INFO - Generated visual verdict with health score: 3
+2025-04-13 00:01:07,415 - main - INFO - Updated user profile: {'user_id': 'demo_user', 'name': 'Sylvester', 'weight_goal': 'maintain', 'dietary_restrictions': ['gluten-free'], 'allergies': ['peanuts'], 'health_conditions': [], 'daily_calorie_target': None, 'activity_level': 'sedentary'}
+2025-04-13 00:01:12,936 - vision - INFO - Starting product image analysis
+2025-04-13 00:01:12,937 - vision - INFO - Preprocessing image before text detection
+2025-04-13 00:01:13,026 - vision - INFO - Sending request to Vision API for text detection
+2025-04-13 00:01:13,752 - vision - INFO - Successfully detected 391 text blocks
+2025-04-13 00:01:13,753 - vision - INFO - Sending request to Vision API for nutrition facts detection
+2025-04-13 00:01:14,535 - vision - INFO - Successfully extracted text from nutrition facts
+2025-04-13 00:01:14,536 - vision - INFO - Successfully parsed nutrition facts
+2025-04-13 00:01:14,536 - vision - INFO - Successfully completed product image analysis
+2025-04-13 00:01:14,537 - gpt_handler - INFO - Starting nutrition analysis for product: Unknown
+2025-04-13 00:01:14,537 - gpt_handler - INFO - Sending request to Gemini API
+2025-04-13 00:01:14,537 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2025-04-13 00:01:17,345 - httpx - INFO - HTTP Request: POST https://us-central1-aiplatform.googleapis.com/v1beta1/projects/eat-good-vsion/locations/us-central1/publishers/google/models/gemini-2.0-flash:generateContent "HTTP/1.1 200 OK"
+2025-04-13 00:01:17,347 - google_genai.models - INFO - AFC remote call 1 is done.
+2025-04-13 00:01:17,347 - gpt_handler - INFO - Successfully parsed Gemini response
+2025-04-13 00:01:17,347 - gpt_handler - INFO - Generated visual verdict with health score: 6
