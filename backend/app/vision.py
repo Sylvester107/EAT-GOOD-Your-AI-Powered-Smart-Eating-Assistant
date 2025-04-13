@@ -8,6 +8,7 @@ from google.cloud.vision_v1 import AnnotateImageResponse
 from PIL import Image
 import logging
 import traceback
+import re
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -178,7 +179,7 @@ class VisionProcessor:
                 # Extract calories
                 if "calories" in line_lower:
                     # Try to extract numeric value using various patterns
-                    import re
+                    
                     calorie_match = re.search(r'calories[:\s]*(\d+)', line_lower)
                     if calorie_match:
                         result["calories"] = int(calorie_match.group(1))

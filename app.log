@@ -207,3 +207,77 @@
 2025-04-08 14:39:18,246 - gpt_handler - INFO - Successfully parsed Gemini response
 2025-04-08 14:39:18,246 - gpt_handler - INFO - Generated visual verdict with health score: 3
 2025-04-08 14:39:18,246 - main - INFO - Successfully completed product scan and analysis
+2025-04-12 21:48:09,781 - gpt_handler - INFO - Successfully initialized Gemini API client
+2025-04-12 21:48:10,850 - vision - INFO - Successfully initialized Vision API client
+2025-04-12 21:48:10,850 - gpt_handler - INFO - Initialized NutritionAnalyzer with model: gemini-2.0-flash
+2025-04-12 21:48:12,545 - gpt_handler - INFO - Successfully initialized Gemini API client
+2025-04-12 21:48:13,657 - vision - INFO - Successfully initialized Vision API client
+2025-04-12 21:48:13,657 - gpt_handler - INFO - Initialized NutritionAnalyzer with model: gemini-2.0-flash
+2025-04-12 21:48:14,815 - vision - INFO - Successfully initialized Vision API client
+2025-04-12 21:48:14,816 - gpt_handler - INFO - Initialized NutritionAnalyzer with model: gemini-2.0-flash
+2025-04-12 21:49:44,951 - main - WARNING - No user ID provided in request
+2025-04-12 21:49:44,953 - main - INFO - Starting product scan for user: anonymous
+2025-04-12 21:49:44,953 - main - INFO - Processing image with Vision API
+2025-04-12 21:49:44,954 - vision - INFO - Starting product image analysis
+2025-04-12 21:49:44,954 - vision - INFO - Preprocessing image before text detection
+2025-04-12 21:49:45,315 - vision - INFO - Sending request to Vision API for text detection
+2025-04-12 21:49:46,074 - vision - INFO - Successfully detected 193 text blocks
+2025-04-12 21:49:46,075 - vision - INFO - Sending request to Vision API for nutrition facts detection
+2025-04-12 21:49:46,824 - vision - INFO - Successfully extracted text from nutrition facts
+2025-04-12 21:49:46,824 - vision - ERROR - Error parsing nutrition facts: cannot access local variable 're' where it is not associated with a value
+2025-04-12 21:49:46,826 - vision - ERROR - Traceback (most recent call last):
+  File "C:\Users\yhung\Desktop\Career Path\Msc. Computer Science\Semester two\Term Projects\EAT-GOOD-Your-AI-Powered-Smart-Eating-Assistant-main\EAT-GOOD-Your-AI-Powered-Smart-Eating-Assistant-main\backend\app\vision.py", line 215, in _parse_nutrition_facts
+    ingredients = [ing.strip() for ing in re.split(r'[,.]', ingredients_text) if ing.strip()]
+                                          ^^
+UnboundLocalError: cannot access local variable 're' where it is not associated with a value
+
+2025-04-12 21:49:46,826 - vision - ERROR - Error in nutrition facts detection: cannot access local variable 're' where it is not associated with a value
+2025-04-12 21:49:46,826 - vision - ERROR - Traceback (most recent call last):
+  File "C:\Users\yhung\Desktop\Career Path\Msc. Computer Science\Semester two\Term Projects\EAT-GOOD-Your-AI-Powered-Smart-Eating-Assistant-main\EAT-GOOD-Your-AI-Powered-Smart-Eating-Assistant-main\backend\app\vision.py", line 143, in detect_nutrition_facts
+    return self._parse_nutrition_facts(full_text)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yhung\Desktop\Career Path\Msc. Computer Science\Semester two\Term Projects\EAT-GOOD-Your-AI-Powered-Smart-Eating-Assistant-main\EAT-GOOD-Your-AI-Powered-Smart-Eating-Assistant-main\backend\app\vision.py", line 215, in _parse_nutrition_facts
+    ingredients = [ing.strip() for ing in re.split(r'[,.]', ingredients_text) if ing.strip()]
+                                          ^^
+UnboundLocalError: cannot access local variable 're' where it is not associated with a value
+
+2025-04-12 21:49:46,827 - vision - ERROR - Error analyzing product image: cannot access local variable 're' where it is not associated with a value
+2025-04-12 21:49:46,827 - vision - ERROR - Traceback (most recent call last):
+  File "C:\Users\yhung\Desktop\Career Path\Msc. Computer Science\Semester two\Term Projects\EAT-GOOD-Your-AI-Powered-Smart-Eating-Assistant-main\EAT-GOOD-Your-AI-Powered-Smart-Eating-Assistant-main\backend\app\vision.py", line 244, in analyze_product_image
+    nutrition = self.detect_nutrition_facts(image_bytes)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yhung\Desktop\Career Path\Msc. Computer Science\Semester two\Term Projects\EAT-GOOD-Your-AI-Powered-Smart-Eating-Assistant-main\EAT-GOOD-Your-AI-Powered-Smart-Eating-Assistant-main\backend\app\vision.py", line 143, in detect_nutrition_facts
+    return self._parse_nutrition_facts(full_text)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yhung\Desktop\Career Path\Msc. Computer Science\Semester two\Term Projects\EAT-GOOD-Your-AI-Powered-Smart-Eating-Assistant-main\EAT-GOOD-Your-AI-Powered-Smart-Eating-Assistant-main\backend\app\vision.py", line 215, in _parse_nutrition_facts
+    ingredients = [ing.strip() for ing in re.split(r'[,.]', ingredients_text) if ing.strip()]
+                                          ^^
+UnboundLocalError: cannot access local variable 're' where it is not associated with a value
+
+2025-04-12 21:49:46,828 - main - ERROR - Vision API error: Error analyzing product image: cannot access local variable 're' where it is not associated with a value
+2025-04-12 21:51:51,438 - gpt_handler - INFO - Successfully initialized Gemini API client
+2025-04-12 21:51:54,938 - vision - INFO - Successfully initialized Vision API client
+2025-04-12 21:51:54,938 - gpt_handler - INFO - Initialized NutritionAnalyzer with model: gemini-2.0-flash
+2025-04-12 21:51:56,641 - vision - INFO - Successfully initialized Vision API client
+2025-04-12 21:51:56,642 - gpt_handler - INFO - Initialized NutritionAnalyzer with model: gemini-2.0-flash
+2025-04-12 21:51:56,731 - main - WARNING - No user ID provided in request
+2025-04-12 21:51:56,731 - main - INFO - Starting product scan for user: anonymous
+2025-04-12 21:51:56,732 - main - INFO - Processing image with Vision API
+2025-04-12 21:51:56,732 - vision - INFO - Starting product image analysis
+2025-04-12 21:51:56,732 - vision - INFO - Preprocessing image before text detection
+2025-04-12 21:51:56,853 - vision - INFO - Sending request to Vision API for text detection
+2025-04-12 21:51:57,545 - vision - INFO - Successfully detected 193 text blocks
+2025-04-12 21:51:57,546 - vision - INFO - Sending request to Vision API for nutrition facts detection
+2025-04-12 21:51:58,155 - vision - INFO - Successfully extracted text from nutrition facts
+2025-04-12 21:51:58,156 - vision - INFO - Successfully parsed nutrition facts
+2025-04-12 21:51:58,156 - vision - INFO - Successfully completed product image analysis
+2025-04-12 21:51:58,156 - main - INFO - Extracted product name from image: FOR
+2025-04-12 21:51:58,157 - main - INFO - Analyzing nutrition data with Gemini
+2025-04-12 21:51:58,157 - gpt_handler - INFO - Starting nutrition analysis for product: FOR
+2025-04-12 21:51:58,157 - gpt_handler - INFO - Sending request to Gemini API
+2025-04-12 21:51:58,157 - google_genai.models - INFO - AFC is enabled with max remote calls: 10.
+2025-04-12 21:52:02,404 - httpx - INFO - HTTP Request: POST https://us-central1-aiplatform.googleapis.com/v1beta1/projects/eat-good-vsion/locations/us-central1/publishers/google/models/gemini-2.0-flash:generateContent "HTTP/1.1 200 OK"
+2025-04-12 21:52:02,408 - google_genai.models - INFO - AFC remote call 1 is done.
+2025-04-12 21:52:02,409 - gpt_handler - INFO - Successfully parsed Gemini response
+2025-04-12 21:52:02,409 - gpt_handler - INFO - Generated visual verdict with health score: 4
+2025-04-12 21:52:02,409 - main - INFO - Successfully completed product scan and analysis
