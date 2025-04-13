@@ -16,8 +16,6 @@ EAT GOOD is an intelligent food analysis system that combines Computer Vision an
 
 ![Nutrition Analysis](./project_images/last_profile_info.png)
 
-![Profile Settings](./project_images/profile_filled.png)
-
 ## ��️ Project Structure
 
 ```
@@ -158,6 +156,7 @@ graph LR
 ```
 
 ## 🔍 API Documentation
+![swagger UI](project_images\api_docs.png)
 
 ### Vision API Endpoints
 

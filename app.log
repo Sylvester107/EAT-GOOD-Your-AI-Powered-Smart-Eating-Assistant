@@ -720,3 +720,11 @@ UnboundLocalError: cannot access local variable 're' where it is not associated 
 2025-04-13 00:01:17,347 - google_genai.models - INFO - AFC remote call 1 is done.
 2025-04-13 00:01:17,347 - gpt_handler - INFO - Successfully parsed Gemini response
 2025-04-13 00:01:17,347 - gpt_handler - INFO - Generated visual verdict with health score: 6
+2025-04-13 00:19:05,244 - gpt_handler - INFO - Successfully initialized Gemini API client
+2025-04-13 00:19:06,390 - vision - INFO - Successfully initialized Vision API client
+2025-04-13 00:19:06,390 - gpt_handler - INFO - Initialized NutritionAnalyzer with model: gemini-2.0-flash
+2025-04-13 00:19:08,143 - gpt_handler - INFO - Successfully initialized Gemini API client
+2025-04-13 00:19:09,187 - vision - INFO - Successfully initialized Vision API client
+2025-04-13 00:19:09,187 - gpt_handler - INFO - Initialized NutritionAnalyzer with model: gemini-2.0-flash
+2025-04-13 00:19:10,171 - vision - INFO - Successfully initialized Vision API client
+2025-04-13 00:19:10,171 - gpt_handler - INFO - Initialized NutritionAnalyzer with model: gemini-2.0-flash
