@@ -156,7 +156,7 @@ graph LR
 ```
 
 ## 🔍 API Documentation
-![swagger UI](project_images\api_docs.png)
+![swagger UI](./project_images/api_docs.png)
 
 ### Vision API Endpoints
 
